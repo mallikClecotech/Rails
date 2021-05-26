@@ -1,0 +1,98 @@
+//-------------------------------------------------------GENERATING MODELS---------------------------------------------------------------//
+//---------------------------------------------------------------------------------------------------------------------------------------//
+
+rails generate model User name:string{30}
+Running via Spring preloader in process 7577
+      invoke  active_record
+      create    db/migrate/20210526171606_create_users.rb
+      create    app/models/user.rb
+      invoke    test_unit
+      create      test/models/user_test.rb
+      
+      
+      
+rails generate model Game title:string
+Running via Spring preloader in process 7588
+      invoke  active_record
+      create    db/migrate/20210526171617_create_games.rb
+      create    app/models/game.rb
+      invoke    test_unit
+      create      test/models/game_test.rb
+      create      test/fixtures/games.yml
+      
+      
+      
+rails generate model Picture picturable_type:string picturable_id:integer
+Running via Spring preloader in process 7599
+      invoke  active_record
+      create    db/migrate/20210526171715_create_pictures.rb
+      invoke    test_unit
+      create      test/models/picture_test.rb
+      create      test/fixtures/pictures.yml
+      
+      
+      
+== 20210526171606 CreateUsers: migrating ======================================
+-- create_table(:users)
+   -> 0.0025s
+== 20210526171606 CreateUsers: migrated (0.0026s) =============================
+
+== 20210526171617 CreateGames: migrating ======================================
+-- create_table(:games)
+   -> 0.0021s
+== 20210526171617 CreateGames: migrated (0.0027s) =============================
+
+-- create_table(:pictures)
+   -> 0.0026s
+== 20210526171715 CreatePictures: migrated (0.0032s) ==========================
+
+
+
+//-----------------------------------------------------------Inserting Data----------------------------------------------------------//
+//-----------------------------------------------------------------------------------------------------------------------------------//
+
+rails console
+Loading development environment (Rails 6.1.3.2)
+
+
+
+irb(main):001:0> User.create(name:"Mallik").create_picture
+   (0.5ms)  SELECT sqlite_version(*)
+  TRANSACTION (0.1ms)  begin transaction
+  User Create (0.3ms)  INSERT INTO "users" ("name", "created_at", "updated_at") VALUES (?, ?, ?)  [["name", "Mallik"], ["created_at", "2021-05-26 17:20:22.032078"], ["updated_at", "2021-05-26 17:20:22.032078"]]
+  TRANSACTION (0.1ms)  begin transaction
+  Picture Create (0.3ms)  INSERT INTO "pictures" ("picturable_type", "picturable_id", "created_at", "updated_at") VALUES (?, ?, ?, ?)  [["picturable_type", "User"], ["picturable_id", 1], ["created_at", "2021-05-26 17:20:22.063875"], ["updated_at", "2021-05-26 17:20:22.063875"]]
+  TRANSACTION (5.9ms)  commit transaction
+  Picture Load (0.2ms)  SELECT "pictures".* FROM "pictures" WHERE "pictures"."picturable_id" = ? AND "pictures"."picturable_type" = ? LIMIT ?  [["picturable_id", 1], ["picturable_type", "User"], ["LIMIT", 1]]
+=> #<Picture id: 1, picturable_type: "User", picturable_id: 1, created_at: "2021-05-26 17:20:22.063875000 +0000", updated_at: "2021-05-26 17:20:22.063875000 +0000">
+
+
+
+irb(main):003:0> Game.create(title:"Gta V").pictures.create
+  TRANSACTION (0.1ms)  begin transaction
+  Game Create (0.3ms)  INSERT INTO "games" ("title", "created_at", "updated_at") VALUES (?, ?, ?)  [["title", "Gta V"], ["created_at", "2021-05-26 17:20:56.880247"], ["updated_at", "2021-05-26 17:20:56.880247"]]
+  TRANSACTION (4.8ms)  commit transaction
+  TRANSACTION (0.1ms)  begin transaction
+  Picture Create (0.3ms)  INSERT INTO "pictures" ("picturable_type", "picturable_id", "created_at", "updated_at") VALUES (?, ?, ?, ?)  [["picturable_type", "Game"], ["picturable_id", 1], ["created_at", "2021-05-26 17:20:56.901441"], ["updated_at", "2021-05-26 17:20:56.901441"]]
+  TRANSACTION (4.9ms)  commit transaction
+=> #<Picture id: 2, picturable_type: "Game", picturable_id: 1, created_at: "2021-05-26 17:20:56.901441000 +0000", updated_at: "2021-05-26 17:20:56.901441000 +0000">
+
+
+
+
+//-------------------------------------------------------Query Inteface----------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------------------------//
+
+irb(main):004:0> Game.first.pictures
+  Game Load (0.2ms)  SELECT "games".* FROM "games" ORDER BY "games"."id" ASC LIMIT ?  [["LIMIT", 1]]
+  Picture Load (0.2ms)  SELECT "pictures".* FROM "pictures" WHERE "pictures"."picturable_id" = ? AND "pictures"."picturable_type" = ? /* loading for inspect */ LIMIT ?  [["picturable_id", 1], ["picturable_type", "Game"], ["LIMIT", 11]]
+=> #<ActiveRecord::Associations::CollectionProxy [#<Picture id: 2, picturable_type: "Game", picturable_id: 1, created_at: "2021-05-26 17:20:56.901441000 +0000", updated_at: "2021-05-26 17:20:56.901441000 +0000">]>
+
+
+
+
+irb(main):006:0> User.first.picture
+  User Load (0.1ms)  SELECT "users".* FROM "users" ORDER BY "users"."id" ASC LIMIT ?  [["LIMIT", 1]]
+  Picture Load (0.1ms)  SELECT "pictures".* FROM "pictures" WHERE "pictures"."picturable_id" = ? AND "pictures"."picturable_type" = ? LIMIT ?  [["picturable_id", 1], ["picturable_type", "User"], ["LIMIT", 1]]
+=> #<Picture id: 1, picturable_type: "User", picturable_id: 1, created_at: "2021-05-26 17:20:22.063875000 +0000", updated_at: "2021-05-26 17:20:22.063875000 +0000">
+
