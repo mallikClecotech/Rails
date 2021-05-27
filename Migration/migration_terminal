@@ -1,0 +1,129 @@
+cd migration
+
+
+rails generate migration CreateUser
+Running via Spring preloader in process 11012
+      invoke  active_record
+      create    db/migrate/20210527111017_create_user.rb
+      
+      
+rails db:migrate
+== 20210527111017 CreateUser: migrating =======================================
+-- create_table(:users)
+   -> 0.0068s
+== 20210527111017 CreateUser: migrated (0.0088s) ==============================
+
+
+
+rails generate migration AddColumnToUsers
+Running via Spring preloader in process 11136
+      invoke  active_record
+      create    db/migrate/20210527111231_add_column_to_users.rb
+      
+      
+rails db:migrate
+== 20210527111231 AddColumnToUsers: migrating =================================
+-- add_column(:users, :username, :string)
+   -> 0.0026s
+== 20210527111231 AddColumnToUsers: migrated (0.0028s) ========================
+
+
+
+rails generate migration AddColumnsToUsers address:text email:string
+Running via Spring preloader in process 11247
+      invoke  active_record
+      create    db/migrate/20210527111415_add_columns_to_users.rb
+
+
+rails db:migrate
+== 20210527111415 AddColumnsToUsers: migrating ================================
+-- add_column(:users, :address, :text)
+   -> 0.0024s
+-- add_column(:users, :email, :string)
+   -> 0.0019s
+== 20210527111415 AddColumnsToUsers: migrated (0.0045s) =======================
+
+
+
+rails db:rollback
+== 20210527111415 AddColumnsToUsers: reverting ================================
+-- remove_column(:users, :email, :string)
+   -> 0.0307s
+-- remove_column(:users, :address, :text)
+   -> 0.0391s
+== 20210527111415 AddColumnsToUsers: reverted (0.0903s) =======================
+
+
+
+rails db:migrate
+== 20210527111415 AddColumnsToUsers: migrating ================================
+-- add_column(:users, :address, :text)
+   -> 0.0027s
+-- add_column(:users, :email, :string)
+   -> 0.0012s
+== 20210527111415 AddColumnsToUsers: migrated (0.0043s) =======================
+
+
+
+rails generate migration RemoveColumnFromUsers
+Running via Spring preloader in process 11426
+      invoke  active_record
+      create    db/migrate/20210527111631_remove_column_from_users.rb
+
+
+rails db:migrate
+== 20210527111631 RemoveColumnFromUsers: migrating ============================
+-- remove_column(:users, :address, :text)
+   -> 0.0222s
+== 20210527111631 RemoveColumnFromUsers: migrated (0.0223s) ===================
+
+
+
+rails db:rollback
+== 20210527111631 RemoveColumnFromUsers: reverting ============================
+-- add_column(:users, :address, :text)
+   -> 0.0028s
+== 20210527111631 RemoveColumnFromUsers: reverted (0.0048s) ===================
+
+
+
+rails db:migrate
+== 20210527111631 RemoveColumnFromUsers: migrating ============================
+-- remove_column(:users, :address, :text)
+   -> 0.0214s
+== 20210527111631 RemoveColumnFromUsers: migrated (0.0215s) ===================
+
+
+
+rails generate model Product title:string
+Running via Spring preloader in process 11606
+      invoke  active_record
+      create    db/migrate/20210527111848_create_products.rb
+      create    app/models/product.rb
+      invoke    test_unit
+      create      test/models/product_test.rb
+      create      test/fixtures/products.yml
+
+
+
+
+rails db:migrate
+== 20210527111848 CreateProducts: migrating ===================================
+-- create_table(:products)
+   -> 0.0027s
+== 20210527111848 CreateProducts: migrated (0.0028s) ==========================
+
+
+
+rails generate migration AddUserRefToProducts user:references
+Running via Spring preloader in process 12020
+      invoke  active_record
+      create    db/migrate/20210527112534_add_user_ref_to_products.rb
+
+
+rails db:migrate
+== 20210527112534 AddUserRefToProducts: migrating =============================
+-- add_reference(:products, :user, {:null=>false, :foreign_key=>true})
+   -> 0.0767s
+== 20210527112534 AddUserRefToProducts: migrated (0.0768s) ====================
+
