@@ -1,0 +1,108 @@
+ cd callback
+
+
+
+ rails generate model Author name:string
+Running via Spring preloader in process 9004
+      invoke  active_record
+      create    db/migrate/20210601132305_create_authors.rb
+      create    app/models/author.rb
+      invoke    test_unit
+      create      test/models/author_test.rb
+      create      test/fixtures/authors.yml
+
+
+
+
+rails generate model Book title:string
+Running via Spring preloader in process 9018
+      invoke  active_record
+      create    db/migrate/20210601132324_create_books.rb
+      create    app/models/book.rb
+      invoke    test_unit
+      create      test/models/book_test.rb
+      create      test/fixtures/books.yml
+
+
+
+rails generate migration AddAuthorRefToBooks author:references
+Running via Spring preloader in process 9033
+      invoke  active_record
+      create    db/migrate/20210601132359_add_author_ref_to_books.rb
+
+
+
+
+rails db:migrate
+== 20210601132305 CreateAuthors: migrating ====================================
+-- create_table(:authors)
+   -> 0.0026s
+== 20210601132305 CreateAuthors: migrated (0.0027s) ===========================
+
+== 20210601132324 CreateBooks: migrating ======================================
+-- create_table(:books)
+   -> 0.0033s
+== 20210601132324 CreateBooks: migrated (0.0033s) =============================
+
+== 20210601132359 AddAuthorRefToBooks: migrating ==============================
+-- add_reference(:books, :author, {:null=>false, :foreign_key=>true})
+   -> 0.0400s
+== 20210601132359 AddAuthorRefToBooks: migrated (0.0400s) =====================
+
+
+
+rails c
+Running via Spring preloader in process 9236
+Loading development environment (Rails 6.1.3.2)
+
+
+
+irb(main):001:0> author = Author.create(name:"MALLIK")
+   (0.9ms)  SELECT sqlite_version(*)
+initialized the object
+creating the object
+  TRANSACTION (0.1ms)  begin transaction
+  Author Create (1.3ms)  INSERT INTO "authors" ("name", "created_at", "updated_at") VALUES (?, ?, ?)  [["name", "MALLIK"], ["created_at", "2021-06-01 13:31:39.976676"], ["updated_at", "2021-06-01 13:31:39.976676"]]
+created object
+object saved
+  TRANSACTION (4.5ms)  commit transaction
+=> #<Author id: 1, name: "MALLIK", created_at: "2021-06-01 13:31:39.976676000 +0000", updated_at: "2021-06-01 13:31:39.976676000 +0000">
+
+
+
+
+irb(main):002:0> author.books.create(title:"Easy Programming")
+  TRANSACTION (0.1ms)  begin transaction
+  Book Create (0.4ms)  INSERT INTO "books" ("title", "created_at", "updated_at", "author_id") VALUES (?, ?, ?, ?)  [["title", "Easy Programming"], ["created_at", "2021-06-01 13:32:52.212465"], ["updated_at", "2021-06-01 13:32:52.212465"], ["author_id", 1]]
+  TRANSACTION (5.1ms)  commit transaction
+=> #<Book id: 1, title: "Easy Programming", created_at: "2021-06-01 13:32:52.212465000 +0000", updated_at: "2021-06-01 13:32:52.212465000 +0000", author_id: 1>
+
+
+
+
+
+irb(main):003:0> some_error = Author.create(name:"An")
+initialized the object
+=> #<Author id: nil, name: "An", created_at: nil, updated_at: nil>
+
+
+
+irb(main):004:0> some_error.errors
+=> #<ActiveModel::Errors:0x00005599e5c68340 @base=#<Author id: nil, name: "An", created_at: nil, updated_at: nil>, @errors=[#<ActiveModel::Error attribute=name, type=too_short, options={:count=>3}>]>
+
+
+
+
+
+irb(main):005:0> some_error.errors[:name]
+=> ["is too short (minimum is 3 characters)"]
+
+
+
+
+irb(main):006:0> some_error.errors.size
+=> 1
+
+
+
+irb(main):007:0> exit
